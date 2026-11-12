@@ -25,23 +25,29 @@ public class Vehicle {
         this.price = price;
     }
 
-    public int getVin() { return vin; }
-    public int getYear() { return year; }
-    public String getMake() { return make; }
-    public String getModel() { return model; }
-    public String getVehicleType() { return vehicleType; }
-    public String getColor() { return color; }
-    public int getOdometer() { return odometer; }
-    public BigDecimal getPrice() { return price; }
+    public int getVin() {return 0; }
+    public void setVin(int vin) {   }
 
-    public void setVin(int vin) { this.vin = vin; }
-    public void setYear(int year) { this.year = year; }
-    public void setMake(String make) { this.make = make; }
-    public void setModel(String model) { this.model = model; }
-    public void setVehicleType(String vehicleType) { this.vehicleType = vehicleType; }
-    public void setColor(String color) { this.color = color; }
-    public void setOdometer(int odometer) { this.odometer = odometer; }
-    public void setPrice(BigDecimal price) { this.price = price; }
+    public int getYear() {return 0; }
+    public void setYear(int year) {   }
+
+    public String getMake() {return null; }
+    public void setMake(String make) {   }
+
+    public String getModel() {return null; }
+    public void setModel(String model) {   }
+
+    public String getVehicleType() {return null; }
+    public void setVehicleType(String vehicleType) {   }
+
+    public String getColor() {return null; }
+    public void setColor(String color) {   }
+
+    public int getOdometer() {return 0; }
+    public void setOdometer(int odometer) {   }
+
+    public BigDecimal getPrice() {return null; }
+    public void setPrice(BigDecimal price) {   }
 
     @Override
     public String toString() {
