@@ -3,6 +3,8 @@ package com.pluralsight;
 import java.io.*;
 import java.math.BigDecimal;
 
+//todo fix filewriter to properly list dealer info at top, currently says "null | null | null".
+
 public class DealershipFileManager {
     static String fileName = "C:\\Users\\zurit\\pluralsight\\workshop\\car-dealership\\src\\main\\java\\com\\pluralsight\\inventory.csv\\";
     public static Dealership getDealership() throws IOException {

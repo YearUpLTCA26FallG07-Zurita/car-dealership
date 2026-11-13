@@ -14,15 +14,8 @@ public class UserInterface {
 
     }
     private void displayVehicles(List<Vehicle> allVehicles) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(DealershipFileManager.fileName))) {
-            String line;
-            reader.readLine();
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        for (Vehicle vehicle : allVehicles) {
+            System.out.println(vehicle);
         }
     }
 
@@ -32,11 +25,12 @@ public class UserInterface {
     }
 
     public void display() throws IOException {
+        init();
         while (true) {
             init();
             System.out.println("""
                     Select an option:
-                    
+
                     1) Find vehicles by price range
                     2) Find vehicles by make and model
                     3) Find vehicles by year range
@@ -46,7 +40,7 @@ public class UserInterface {
                     7) List ALL vehicles
                     8) Add a vehicle
                     9) Remove a vehicle
-                    
+
                     99) Quit program""");
 
             int input = Console.promptForInt("Enter command: ");
@@ -67,7 +61,10 @@ public class UserInterface {
     }
 
     private void processGetByPriceRequest() {
+        BigDecimal minPrice = BigDecimal.valueOf(Console.promptForDouble("Enter lowest price: "));
+        BigDecimal maxPrice = BigDecimal.valueOf(Console.promptForDouble("Enter highest price: "));
 
+        displayVehicles(dealership.getVehiclesByPrice(minPrice, maxPrice));
     }
 
     private void processGetByMakeModelRequest() {

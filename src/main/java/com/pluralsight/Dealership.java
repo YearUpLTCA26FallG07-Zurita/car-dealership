@@ -1,5 +1,8 @@
 package com.pluralsight;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,33 +11,30 @@ public class Dealership {
     private String name;
     private String address;
     private String phone;
-    private ArrayList<Vehicle> inventory;
+    private final ArrayList<Vehicle> inventory;
 
     public String getName() {
-        
-        return null;
+        return name;
     }
 
     public void setName(String name) {
-        
+        this.name = name;
     }
 
     public String getAddress() {
-        
-        return null;
+        return address;
     }
 
     public void setAddress(String address) {
-        
+        this.address = address;
     }
 
     public String getPhone() {
-        
-        return null;
+        return phone;
     }
 
     public void setPhone(String phone) {
-        
+        this.phone = phone;
     }
 
     public Dealership(String name, String address, String phone) {
@@ -45,8 +45,16 @@ public class Dealership {
     }
 
     public List<Vehicle> getVehiclesByPrice(BigDecimal min, BigDecimal max) {
-        
-        return null;
+        List<Vehicle> withinPrice = new ArrayList<>();
+
+        for (Vehicle cars : inventory) {
+            BigDecimal price = cars.getPrice();
+
+            if (price.compareTo(min) >= 0 && price.compareTo(max) <=0) {
+                withinPrice.add(cars);
+            }
+        }
+        return withinPrice;
     }
 
     public List<Vehicle> getVehiclesByMakeModel(String make, String model) {
