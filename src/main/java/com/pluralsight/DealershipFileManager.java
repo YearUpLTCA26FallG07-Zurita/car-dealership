@@ -7,7 +7,6 @@ public class DealershipFileManager {
     static String fileName = "C:\\Users\\zurit\\pluralsight\\workshop\\car-dealership\\src\\main\\java\\com\\pluralsight\\inventory.csv\\";
     public static Dealership getDealership() throws IOException {
 
-
         Dealership dealer;
         try (BufferedReader readFile = new BufferedReader(new FileReader(fileName))) {
             String line = readFile.readLine();
@@ -34,7 +33,7 @@ public class DealershipFileManager {
     }
 
 
-    public void saveDealership(Dealership dealership) throws IOException {
+    public static void saveDealership(Dealership dealership) throws IOException {
         try (BufferedWriter writeFile = new BufferedWriter(new FileWriter(fileName))){
             writeFile.write(dealership.getName() + " | " + dealership.getAddress() + " | " + dealership.getPhone());
             writeFile.newLine();

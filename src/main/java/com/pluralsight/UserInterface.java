@@ -2,6 +2,7 @@ package com.pluralsight;
 
 import com.sun.security.jgss.GSSUtil;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -12,7 +13,13 @@ public class UserInterface {
 
     }
 
-    public void display() {
+    private void init() throws IOException {
+        DealershipFileManager fileManager = new DealershipFileManager();
+        this.dealership = fileManager.getDealership();
+    }
+
+    public void display() throws IOException {
+        init();
         System.out.println("""
                 Select an option:
                 
@@ -73,7 +80,7 @@ public class UserInterface {
 
     }
 
-    private void processAddVehicleRequest() {
+    private void processAddVehicleRequest() throws IOException {
         int vin = Console.promptForInt("Enter VIN number: ");
         int year = Console.promptForInt("Enter year of vehicle: ");
         String make = Console.promptForString("Enter vehicle make: ");
@@ -85,6 +92,7 @@ public class UserInterface {
 
         Vehicle newCar = new Vehicle(vin, year, make, model, vehicleType, color, odometer, price);
         dealership.addVehicle(newCar);
+        DealershipFileManager.saveDealership(dealership);
 
     }
 
