@@ -1,19 +1,29 @@
 package com.pluralsight;
 
-import com.sun.security.jgss.GSSUtil;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.List;
 
 public class UserInterface {
     private Dealership dealership;
 
     public UserInterface() {
 
+    }
+    private void displayVehicles(List<Vehicle> allVehicles) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(DealershipFileManager.fileName))) {
+            String line;
+            reader.readLine();
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void init() throws IOException {
@@ -81,16 +91,8 @@ public class UserInterface {
     }
 
     private void processGetAllVehiclesRequest() throws FileNotFoundException {
-        try (BufferedReader reader = new BufferedReader(new FileReader(DealershipFileManager.fileName))) {
-            String line;
-            reader.readLine();
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+        displayVehicles(dealership.getAllVehicles());
 
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private void processAddVehicleRequest() throws IOException {
