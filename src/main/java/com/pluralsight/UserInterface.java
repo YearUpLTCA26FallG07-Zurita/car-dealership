@@ -64,27 +64,54 @@ public class UserInterface {
         BigDecimal minPrice = BigDecimal.valueOf(Console.promptForDouble("Enter lowest price: "));
         BigDecimal maxPrice = BigDecimal.valueOf(Console.promptForDouble("Enter highest price: "));
 
+        //todo add confirmation prompt
+
         displayVehicles(dealership.getVehiclesByPrice(minPrice, maxPrice));
     }
 
     private void processGetByMakeModelRequest() {
+        String make = Console.promptForString("Enter make of the vehicle: ");
+        String model = Console.promptForString("Enter model of the vehicle: ");
+
+        //todo add confirmation prompt
+
+        displayVehicles(dealership.getVehiclesByMakeModel(make, model));
 
     }
 
     private void processGetByYearRequest() {
+        int minYear = Console.promptForInt("Enter minimum year: ");
+        int maxYear = Console.promptForInt("Enter maximum year: ");
 
+        //todo add confirmation prompt
+
+        displayVehicles(dealership.getVehiclesByYear(minYear, maxYear));
     }
 
     private void processGetByColorRequest() {
+        String color = Console.promptForString("Enter color of vehicle: ").trim();
 
+        //todo add confirmation prompt
+
+        displayVehicles(dealership.getVehiclesByColor(color));
     }
 
     private void processGetByMileageRequest() {
+        int minMileage = Console.promptForInt("Enter minimum mileage: ");
+        int maxMileage = Console.promptForInt("Enter maximum mileage: ");
 
+        //todo add confirmation prompt
+
+        displayVehicles(dealership.getVehiclesByMileage(minMileage, maxMileage));
     }
 
     private void processGetByVehicleTypeRequest() {
+        String vehicleType = Console.promptForString("Enter type of vehicle: ").trim();
 
+        //todo add confirmation prompt
+        //todo add extra text listing possible options (car, truck, SUV, van)
+
+        displayVehicles(dealership.getVehiclesByType(vehicleType));
     }
 
     private void processGetAllVehiclesRequest() throws FileNotFoundException {
