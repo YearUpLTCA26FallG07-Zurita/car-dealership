@@ -25,28 +25,28 @@ public class Vehicle {
         this.price = price;
     }
 
-    public int getVin() {return 0; }
+    public int getVin() {return vin; }
     public void setVin(int vin) {   }
 
-    public int getYear() {return 0; }
+    public int getYear() {return year; }
     public void setYear(int year) {   }
 
-    public String getMake() {return null; }
+    public String getMake() {return make; }
     public void setMake(String make) {   }
 
-    public String getModel() {return null; }
+    public String getModel() {return model; }
     public void setModel(String model) {   }
 
-    public String getVehicleType() {return null; }
+    public String getVehicleType() {return vehicleType; }
     public void setVehicleType(String vehicleType) {   }
 
-    public String getColor() {return null; }
+    public String getColor() {return color; }
     public void setColor(String color) {   }
 
-    public int getOdometer() {return 0; }
+    public int getOdometer() {return odometer; }
     public void setOdometer(int odometer) {   }
 
-    public BigDecimal getPrice() {return null; }
+    public BigDecimal getPrice() {return price; }
     public void setPrice(BigDecimal price) {   }
 
     @Override

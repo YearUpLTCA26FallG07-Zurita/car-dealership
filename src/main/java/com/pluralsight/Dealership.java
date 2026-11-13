@@ -38,7 +38,10 @@ public class Dealership {
     }
 
     public Dealership(String name, String address, String phone) {
-        
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.inventory = new ArrayList<>();
     }
 
     public List<Vehicle> getVehiclesByPrice(BigDecimal min, BigDecimal max) {
@@ -72,12 +75,11 @@ public class Dealership {
     }
 
     public List<Vehicle> getAllVehicles() {
-        
-        return null;
+        return inventory;
     }
 
     public void addVehicle(Vehicle vehicle) {
-        
+        inventory.add(vehicle);
     }
 
     public void removeVehicle(Vehicle vehicle) {
