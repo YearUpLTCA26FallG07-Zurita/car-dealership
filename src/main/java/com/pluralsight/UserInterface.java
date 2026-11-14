@@ -62,29 +62,36 @@ public class UserInterface {
     }
 
     private void processGetByPriceRequest() {
-        BigDecimal minPrice = BigDecimal.valueOf(Console.promptForDouble("Enter lowest price: "));
-        BigDecimal maxPrice = BigDecimal.valueOf(Console.promptForDouble("Enter highest price: "));
+        boolean running = true;
+        while (running) {
+            BigDecimal minPrice = BigDecimal.valueOf(Console.promptForDouble("Enter lowest price: "));
+            BigDecimal maxPrice = BigDecimal.valueOf(Console.promptForDouble("Enter highest price: "));
 
-        System.out.println("""
-                Select sorting order:
+            boolean lowToHigh = processSetSortingOrder();
+            String sortOrder = lowToHigh ? "Lowest to highest" : "Highest to lowest";
+
+            System.out.printf("""
+                You entered:
                 
-                1) Low to High
-                2) High to Low
-                """);
+                Range: $%,.2f - $%,.2f
+                Sort : %s
+                
+                Is this correct?
+                
+                1) Yes.
+                2) No, revise input.
+                """, minPrice, maxPrice, sortOrder);
 
-        int option = Console.promptForInt("Enter selection: ");
-        boolean lowToHigh = true;
-
-        switch (option) {
-            case 1 -> lowToHigh = true;
-            case 2 -> lowToHigh = false;
-            case 99 -> {}
-            default -> System.out.println("Invalid option. Enter a valid input.");
+            int confirm = Console.promptForInt("Enter selection: ");
+            switch (confirm) {
+                case 1 -> {
+                    displayVehicles(dealership.getVehiclesByPrice(minPrice, maxPrice, lowToHigh));
+                    running = false;
+                }
+                case 2 -> running = true;
+                default -> System.out.println("Enter a valid input.");
+            }
         }
-
-        //todo add confirmation prompt
-
-        displayVehicles(dealership.getVehiclesByPrice(minPrice, maxPrice, lowToHigh));
     }
 
     private void processGetByMakeModelRequest() {
@@ -171,5 +178,24 @@ public class UserInterface {
         } else {
             System.out.println("Vehicle is not in inventory.");
         }
+    }
+    private boolean processSetSortingOrder() {
+        System.out.println("""
+                Select sorting order:
+                
+                1) Low to High
+                2) High to Low
+                """);
+
+        int option = Console.promptForInt("Enter selection: ");
+        boolean lowToHigh = true;
+
+        switch (option) {
+            case 1 -> lowToHigh = true;
+            case 2 -> lowToHigh = false;
+            case 99 -> {}
+            default -> System.out.println("Invalid option. Enter a valid input.");
+        }
+    return lowToHigh;
     }
 }

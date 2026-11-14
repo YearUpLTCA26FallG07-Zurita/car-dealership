@@ -56,14 +56,6 @@ public class Dealership {
             }
         }
         setSortingOrder(lowToHigh, withinPrice);
-
-//        if (lowToHigh) {
-//            withinPrice.sort(Comparator.comparing(Vehicle::getPrice));
-//        } else {
-//            withinPrice.sort(Comparator.comparing(Vehicle::getPrice).reversed());
-//        }
-
-
         return withinPrice;
     }
 
