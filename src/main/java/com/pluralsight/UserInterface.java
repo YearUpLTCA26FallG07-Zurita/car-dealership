@@ -66,10 +66,46 @@ public class UserInterface {
     }
 
     private void processGetByPriceRequest() {
+        String inputLow = "";
+        String inputHigh = "";
+        BigDecimal minPrice;
+        BigDecimal maxPrice;
         running = true;
         while (running) {
-            BigDecimal minPrice = BigDecimal.valueOf(Console.promptForDouble("Enter lowest price: "));
-            BigDecimal maxPrice = BigDecimal.valueOf(Console.promptForDouble("Enter highest price: "));
+            //Loop that performs exception handling for LOWEST mileage; prompts again if triggered.
+            while (true) {
+                try {
+                    inputLow = Console.promptForString("Enter lowest price range, or leave blank for inventory minimum: ").trim();
+                    minPrice = inputLow.isEmpty() ? new BigDecimal(0) : new BigDecimal(inputLow);
+
+                    if (minPrice)
+
+
+                    if (minPrice.compareTo(BigDecimal.ZERO) == 0) {
+                        throw new IllegalArgumentException("Lowest price must be greater than $0.00.");
+                    }
+                    break;
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+            //Loop that performs exception handling for HIGHEST mileage; prompts again if triggered.
+            while (true) {
+                try {
+                    inputHigh = Console.promptForString("Enter highest price range, or leave blank for inventory maximum: ").trim();
+                    maxPrice = inputHigh.isEmpty() ? new BigDecimal(0) : new BigDecimal(inputLow);
+
+                    if (maxPrice.compareTo(minPrice) < 0) {
+                        throw new IllegalArgumentException("Maximum price cannot be less than minimum price.");
+                    }
+                    if (inputLow.isEmpty() && inputHigh.isEmpty()) {
+                        throw new IllegalArgumentException("Both fields cannot be empty.");
+                    }
+                    break;
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
             System.out.println("""
                     Select sorting order:
                     
@@ -107,7 +143,6 @@ public class UserInterface {
     private void processGetByMakeModelRequest() {
         running = true;
         while (running) {
-            //todo add extra text giving the user the option to enter only make.
             String make = Console.promptForString("Enter make of the vehicle: ");
             String model = Console.promptForString("Enter model of the vehicle: ");
 
