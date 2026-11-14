@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Dealership {
@@ -14,7 +15,7 @@ public class Dealership {
     private final ArrayList<Vehicle> inventory;
 
     public String getName() {
-        return name;
+        return "Homestead Motors";
     }
 
     public void setName(String name) {
@@ -22,7 +23,7 @@ public class Dealership {
     }
 
     public String getAddress() {
-        return address;
+        return "482 Oak Ridge Drive, Homestead, FL 33033";
     }
 
     public void setAddress(String address) {
@@ -30,7 +31,7 @@ public class Dealership {
     }
 
     public String getPhone() {
-        return phone;
+        return "305-555-0187";
     }
 
     public void setPhone(String phone) {
@@ -44,16 +45,25 @@ public class Dealership {
         this.inventory = new ArrayList<>();
     }
 
-    public List<Vehicle> getVehiclesByPrice(BigDecimal min, BigDecimal max) {
+    public List<Vehicle> getVehiclesByPrice(BigDecimal min, BigDecimal max, boolean lowToHigh) {
         List<Vehicle> withinPrice = new ArrayList<>();
 
         for (Vehicle cars : inventory) {
             BigDecimal price = cars.getPrice();
 
-            if (price.compareTo(min) >= 0 && price.compareTo(max) <=0) {
+            if (price.compareTo(min) >= 0 && price.compareTo(max) <= 0) {
                 withinPrice.add(cars);
             }
         }
+        setSortingOrder(lowToHigh, withinPrice);
+
+//        if (lowToHigh) {
+//            withinPrice.sort(Comparator.comparing(Vehicle::getPrice));
+//        } else {
+//            withinPrice.sort(Comparator.comparing(Vehicle::getPrice).reversed());
+//        }
+
+
         return withinPrice;
     }
 
@@ -120,6 +130,7 @@ public class Dealership {
     }
 
     public List<Vehicle> getAllVehicles() {
+
         return inventory;
     }
 
@@ -128,6 +139,14 @@ public class Dealership {
     }
 
     public void removeVehicle(Vehicle vehicle) {
-        
+        inventory.remove(vehicle);
+    }
+
+    public void setSortingOrder(boolean lowToHigh, List<Vehicle> processMenu) {
+        if (lowToHigh) {
+            processMenu.sort(Comparator.comparing(Vehicle::getPrice));
+        } else {
+            processMenu.sort(Comparator.comparing(Vehicle::getPrice).reversed());
+        }
     }
 }

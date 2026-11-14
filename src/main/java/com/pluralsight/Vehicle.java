@@ -51,7 +51,9 @@ public class Vehicle {
 
     @Override
     public String toString() {
-        return year + " " + make + " " + model + " (" + color + ", " + vehicleType + ")"
-                + " VIN: " + vin + " | " + odometer + " mi | $" + price;
+        String makeModel = make + " " + model;
+        String typeColor = vehicleType + " (" + color + ")";
+        return String.format("%-4d | %-25s | %-15s | VIN: %-10d | %-,9d mi | $%,10.2f",
+                year, makeModel, typeColor, vin, odometer, price);
     }
 }

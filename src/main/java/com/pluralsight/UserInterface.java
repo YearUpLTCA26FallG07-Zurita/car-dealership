@@ -34,9 +34,10 @@ public class UserInterface {
                     1) Find vehicles by price range
                     2) Find vehicles by make and model
                     3) Find vehicles by year range
-                    4) Find vehciles by color
+                    4) Find vehicles by color
                     5) Find vehicles by mile range
                     6) Find vehicles by type
+                    -----------------------------------
                     7) List ALL vehicles
                     8) Add a vehicle
                     9) Remove a vehicle
@@ -64,9 +65,26 @@ public class UserInterface {
         BigDecimal minPrice = BigDecimal.valueOf(Console.promptForDouble("Enter lowest price: "));
         BigDecimal maxPrice = BigDecimal.valueOf(Console.promptForDouble("Enter highest price: "));
 
+        System.out.println("""
+                Select sorting order:
+                
+                1) Low to High
+                2) High to Low
+                """);
+
+        int option = Console.promptForInt("Enter selection: ");
+        boolean lowToHigh = true;
+
+        switch (option) {
+            case 1 -> lowToHigh = true;
+            case 2 -> lowToHigh = false;
+            case 99 -> {}
+            default -> System.out.println("Invalid option. Enter a valid input.");
+        }
+
         //todo add confirmation prompt
 
-        displayVehicles(dealership.getVehiclesByPrice(minPrice, maxPrice));
+        displayVehicles(dealership.getVehiclesByPrice(minPrice, maxPrice, lowToHigh));
     }
 
     private void processGetByMakeModelRequest() {
@@ -136,7 +154,22 @@ public class UserInterface {
 
     }
 
-    private void processRemoveVehicleRequest() {
+    private void processRemoveVehicleRequest() throws IOException {
+        int vehicleId = Console.promptForInt("Enter vehicle VIN number: ");
 
+        Vehicle vehicleToRemove = null;
+
+        for (Vehicle car : dealership.getAllVehicles()) {
+            if (car.getVin() == vehicleId) {
+                vehicleToRemove = car;
+                break;
+            }
+        }
+        if (vehicleToRemove != null) {
+            dealership.removeVehicle(vehicleToRemove);
+            DealershipFileManager.saveDealership(dealership);
+        } else {
+            System.out.println("Vehicle is not in inventory.");
+        }
     }
 }
