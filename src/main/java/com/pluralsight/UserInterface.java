@@ -66,6 +66,12 @@ public class UserInterface {
         while (running) {
             BigDecimal minPrice = BigDecimal.valueOf(Console.promptForDouble("Enter lowest price: "));
             BigDecimal maxPrice = BigDecimal.valueOf(Console.promptForDouble("Enter highest price: "));
+            System.out.println("""
+                Select sorting order:
+                
+                1) Low to High
+                2) High to Low
+                """);
 
             boolean lowToHigh = processSetSortingOrder();
             String sortOrder = lowToHigh ? "Lowest to highest" : "Highest to lowest";
@@ -95,13 +101,42 @@ public class UserInterface {
     }
 
     private void processGetByMakeModelRequest() {
-        String make = Console.promptForString("Enter make of the vehicle: ");
-        String model = Console.promptForString("Enter model of the vehicle: ");
+        boolean running = true;
+        while (running) {
+            String make = Console.promptForString("Enter make of the vehicle: ");
+            String model = Console.promptForString("Enter model of the vehicle: ");
+            System.out.println("""
+                    Select alphabetical sorting order:
+                    
+                    1) A - Z
+                    2) Z - A
+                    """);
 
-        //todo add confirmation prompt
+            boolean lowToHigh = processSetSortingOrder();
+            String sortOrder = lowToHigh ? "A - Z" : "Z - A";
 
-        displayVehicles(dealership.getVehiclesByMakeModel(make, model));
+            System.out.printf("""
+                    You entered:
+                    
+                    Vehicle: %s %s
+                    Sort   : %s
+                    
+                    Is this correct?
+                    
+                    1) Yes.
+                    2) No, revise input.
+                    """, make, model, sortOrder);
 
+            int confirm = Console.promptForInt("Enter selection: ");
+            switch (confirm) {
+                case 1 -> {
+                    displayVehicles(dealership.getVehiclesByMakeModel(make, model, lowToHigh));
+                    running = false;
+                }
+                case 2 -> running = true;
+                default -> System.out.println("Enter a valid input.");
+            }
+        }
     }
 
     private void processGetByYearRequest() {
@@ -180,12 +215,12 @@ public class UserInterface {
         }
     }
     private boolean processSetSortingOrder() {
-        System.out.println("""
-                Select sorting order:
-                
-                1) Low to High
-                2) High to Low
-                """);
+//        System.out.println("""
+//                Select sorting order:
+//
+//                1) Low to High
+//                2) High to Low
+//                """);
 
         int option = Console.promptForInt("Enter selection: ");
         boolean lowToHigh = true;

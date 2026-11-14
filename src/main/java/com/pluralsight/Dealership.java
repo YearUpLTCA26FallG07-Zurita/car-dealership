@@ -59,7 +59,7 @@ public class Dealership {
         return withinPrice;
     }
 
-    public List<Vehicle> getVehiclesByMakeModel(String make, String model) {
+    public List<Vehicle> getVehiclesByMakeModel(String make, String model, boolean lowToHigh) {
         List<Vehicle> byMakeModel = new ArrayList<>();
 
         for (Vehicle cars : inventory) {
