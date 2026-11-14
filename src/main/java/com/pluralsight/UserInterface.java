@@ -339,14 +339,66 @@ public class UserInterface {
         }
     }
 
-
     private void processGetByVehicleTypeRequest() {
-        String vehicleType = Console.promptForString("Enter type of vehicle: ").trim();
+        boolean lowToHigh = true;
+        running = true;
+        while (running) {
+            try {
+                System.out.println("""
+                        Enter vehicle types (3 max.)
+                        
+                        - Car
+                        - Van
+                        - Truck
+                        - SUV""");
 
-        //todo add confirmation prompt
-        //todo add extra text listing possible options (car, truck, SUV, van)
+                String input = Console.promptForString("Enter vehicle type(s): ");
+                String[] inputTypes = input.split("[,\\s]+");
 
-        displayVehicles(dealership.getVehiclesByType(vehicleType));
+                if (input.isEmpty()) {
+                    throw new IllegalArgumentException("Minimum vehicle type entry is 1.");
+                } else if (inputTypes.length > 3) {
+                    throw new IllegalArgumentException("Maximum vehicle type entry is 3.");
+                }
+                System.out.println("""
+                    Select sorting order:
+                    
+                    1) Lowest to highest
+                    2) Highest to lowest
+                    """);
+
+                lowToHigh = processSetSortingOrder();
+                String sortOrder = lowToHigh ? "Lowest to highest" : "Highest to lowest";
+
+                System.out.println("You entered:\n");
+                if (inputTypes.length == 1) {
+                    System.out.printf("Vehicle Type: %s\nSort        : %s\n", inputTypes[0], sortOrder);
+                } else if (inputTypes.length == 2) {
+                    System.out.printf("Vehicle Types: %s, %s\nSort         : %s\n", inputTypes[0], inputTypes[1], sortOrder);
+                } else if (inputTypes.length == 3) {
+                    System.out.printf("Vehicle Types: %s, %s, %s\nSort         : %s\n", inputTypes[0], inputTypes[1], inputTypes[2], sortOrder);
+                }
+
+                    System.out.println("""
+                            \nIs this correct?
+                            
+                            1) Yes
+                            2) No, revise input.""");
+
+                int confirm = Console.promptForInt("Enter selection: ");
+                switch (confirm) {
+                    case 1 -> {
+                        displayVehicles(dealership.getVehiclesByType(lowToHigh,inputTypes));
+                        running = false;
+                    }
+                    case 2 -> running = true;
+                    default -> System.out.println("Enter a valid input.");
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+
+        }
     }
 
     private void processGetAllVehiclesRequest() throws FileNotFoundException {

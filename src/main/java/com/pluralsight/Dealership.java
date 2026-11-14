@@ -120,19 +120,24 @@ public class Dealership {
                 withinMileage.add(cars);
             }
         }
-        setSortingOrder(lowToHigh, withinMileage, Comparator.comparing(Vehicle::getOdometer));
+        setSortingOrder(lowToHigh, withinMileage, Comparator.comparing(Vehicle::getOdometer).thenComparing(Vehicle::getMake).thenComparing(Vehicle::getModel));
         return withinMileage;
     }
 
-    public List<Vehicle> getVehiclesByType(String vehicleType) {
+    //Overloaded methods consider user filtering for multiple vehicle types, up to 3.
+    public List<Vehicle> getVehiclesByType(boolean lowToHigh, String... inputTypes) {
         List<Vehicle> byType = new ArrayList<>();
 
-        for (Vehicle cars : inventory) {
-
-            if (vehicleType.equalsIgnoreCase(cars.getVehicleType())) {
-                byType.add(cars);
+        for (Vehicle vehicle : inventory) {
+            for (String type : inputTypes) {
+                if (vehicle.getVehicleType().equalsIgnoreCase(type)) {
+                    byType.add(vehicle);
+                    break;
+                }
             }
         }
+
+        setSortingOrder(lowToHigh, byType, Comparator.comparing(Vehicle::getVehicleType).thenComparing(Vehicle::getMake).thenComparing(Vehicle::getModel));
         return byType;
     }
 
