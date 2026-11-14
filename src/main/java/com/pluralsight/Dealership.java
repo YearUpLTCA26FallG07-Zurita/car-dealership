@@ -97,7 +97,7 @@ public class Dealership {
         return withinYear;
     }
 
-    public List<Vehicle> getVehiclesByColor(String color) {
+    public List<Vehicle> getVehiclesByColor(String color, boolean lowToHigh) {
         List<Vehicle> byColor = new ArrayList<>();
 
         for (Vehicle cars : inventory) {
@@ -106,6 +106,7 @@ public class Dealership {
                 byColor.add(cars);
             }
         }
+        setSortingOrder(lowToHigh, byColor, Comparator.comparing(Vehicle::getMake).thenComparing(Vehicle::getModel));
         return byColor;
     }
 

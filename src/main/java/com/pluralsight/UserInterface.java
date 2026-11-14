@@ -9,7 +9,7 @@ import java.util.List;
 
 public class UserInterface {
     private Dealership dealership;
-
+    private boolean running = true;
     public UserInterface() {
 
     }
@@ -65,7 +65,7 @@ public class UserInterface {
     }
 
     private void processGetByPriceRequest() {
-        boolean running = true;
+        running = true;
         while (running) {
             BigDecimal minPrice = BigDecimal.valueOf(Console.promptForDouble("Enter lowest price: "));
             BigDecimal maxPrice = BigDecimal.valueOf(Console.promptForDouble("Enter highest price: "));
@@ -104,7 +104,7 @@ public class UserInterface {
     }
 
     private void processGetByMakeModelRequest() {
-        boolean running = true;
+        running = true;
         while (running) {
             //todo add extra text giving the user the option to enter only make.
             String make = Console.promptForString("Enter make of the vehicle: ");
@@ -156,7 +156,6 @@ public class UserInterface {
         int range = Console.promptForInt("Enter selection: ");
 
         while (running) {
-            //todo add extra text giving the user the option to enter only one year.
             switch (range) {
                 case 1 -> {
                     int year = Console.promptForInt("Enter year: ");
@@ -225,11 +224,43 @@ public class UserInterface {
     }
 
     private void processGetByColorRequest() {
-        String color = Console.promptForString("Enter color of vehicle: ").trim();
+        running = true;
+        while (running) {
+            String color = Console.promptForString("Enter color of vehicle: ").trim();
 
-        //todo add confirmation prompt
+            //todo add confirmation prompt
+            System.out.println("""
+                    Select alphabetical sorting order:
+                    
+                    1) A - Z
+                    2) Z - A
+                    """);
 
-        displayVehicles(dealership.getVehiclesByColor(color));
+            boolean lowToHigh = processSetSortingOrder();
+            String sortOrder = lowToHigh ? "A - Z" : "Z - A";
+
+            System.out.printf("""
+                    You entered:
+                    
+                    Color: %s
+                    Sort : %s
+                    
+                    Is this correct?
+                    
+                    1) Yes.
+                    2) No, revise input.
+                    """, color, sortOrder);
+
+            int confirm = Console.promptForInt("Enter selection: ");
+            switch (confirm) {
+                case 1 -> {
+                    displayVehicles(dealership.getVehiclesByColor(color, lowToHigh));
+                    running = false;
+                }
+                case 2 -> running = true;
+                default -> System.out.println("Enter a valid input.");
+            }
+        }
     }
 
     private void processGetByMileageRequest() {
