@@ -10,6 +10,7 @@ import java.util.List;
 public class UserInterface {
     private Dealership dealership;
     private boolean running = true;
+
     public UserInterface() {
 
     }
@@ -147,11 +148,11 @@ public class UserInterface {
     private void processGetByYearRequest() {
         boolean running = true;
         System.out.println("""
-                    What type of range would you like to view?
-                    
-                    1) Single year range
-                    2) Multiple year range
-                    """);
+                What type of range would you like to view?
+                
+                1) Single year range
+                2) Multiple year range
+                """);
 
         int range = Console.promptForInt("Enter selection: ");
 
@@ -264,13 +265,80 @@ public class UserInterface {
     }
 
     private void processGetByMileageRequest() {
-        int minMileage = Console.promptForInt("Enter minimum mileage: ");
-        int maxMileage = Console.promptForInt("Enter maximum mileage: ");
+        String inputLow = "";
+        String inputHigh = "";
+        boolean lowToHigh = true;
+        int minMileage = 0;
+        int maxMileage = 0;
+        running = true;
+        while (running) {
+            //Loop that performs exception handling for LOWEST mileage; prompts again if triggered.
+            while (true) {
+                try {
+                    inputLow = Console.promptForString("Enter minimum mileage, or leave blank for inventory minimum: ").trim();
+                    minMileage = inputLow.isEmpty() ? 0 : Integer.parseInt(inputLow);
 
-        //todo add confirmation prompt
+                    if (minMileage < 0) {
+                        throw new IllegalArgumentException("Lowest mileage must be greater than 0 miles.");
+                    }
+                    break;
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+            //Loop that performs exception handling for HIGHEST mileage; prompts again if triggered.
+            while (true) {
+                try {
+                    inputHigh = Console.promptForString("Enter maximum mileage, or leave blank for inventory maximum: ").trim();
+                    maxMileage = inputHigh.isEmpty() ? 150000 : Integer.parseInt(inputHigh);
+                    if (maxMileage > 150000) {
+                        throw new IllegalArgumentException("Maximum mileage must be less than 150,000 miles.");
+                    }
+                    if (maxMileage < minMileage) {
+                        throw new IllegalArgumentException("Maximum mileage cannot be less than minimum mileage.");
+                    }
+                    if (inputLow.isEmpty() && inputHigh.isEmpty()) {
+                        throw new IllegalArgumentException("Both fields cannot be empty.");
+                    }
+                    break;
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
 
-        displayVehicles(dealership.getVehiclesByMileage(minMileage, maxMileage));
+            System.out.println("""
+                    Select sorting order:
+                    
+                    1) Lowest to highest
+                    2) Highest to lowest
+                    """);
+
+            lowToHigh = processSetSortingOrder();
+            String sortOrder = lowToHigh ? "Lowest to highest" : "Highest to lowest";
+
+            System.out.printf("""
+                    You entered:
+                    
+                    Mileage: %d mi. - %d mi.
+                    Sort   : %s
+                    
+                    Is this correct?
+                    
+                    1) Yes.
+                    2) No, revise input.
+                    """, minMileage, maxMileage, sortOrder);
+            int confirm = Console.promptForInt("Enter selection: ");
+            switch (confirm) {
+                case 1 -> {
+                    displayVehicles(dealership.getVehiclesByMileage(minMileage, maxMileage, lowToHigh));
+                    running = false;
+                }
+                case 2 -> running = true;
+                default -> System.out.println("Enter a valid input.");
+            }
+        }
     }
+
 
     private void processGetByVehicleTypeRequest() {
         String vehicleType = Console.promptForString("Enter type of vehicle: ").trim();

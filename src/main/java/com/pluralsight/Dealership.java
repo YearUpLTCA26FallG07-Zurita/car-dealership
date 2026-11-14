@@ -110,7 +110,7 @@ public class Dealership {
         return byColor;
     }
 
-    public List<Vehicle> getVehiclesByMileage(int min, int max) {
+    public List<Vehicle> getVehiclesByMileage(int min, int max, boolean lowToHigh) {
         List<Vehicle> withinMileage = new ArrayList<>();
 
         for (Vehicle cars : inventory) {
@@ -120,6 +120,7 @@ public class Dealership {
                 withinMileage.add(cars);
             }
         }
+        setSortingOrder(lowToHigh, withinMileage, Comparator.comparing(Vehicle::getOdometer));
         return withinMileage;
     }
 
