@@ -55,7 +55,7 @@ public class Dealership {
                 withinPrice.add(cars);
             }
         }
-        setSortingOrder(lowToHigh, withinPrice);
+        setSortingOrder(lowToHigh, withinPrice, Comparator.comparing(Vehicle::getPrice));
         return withinPrice;
     }
 
@@ -64,10 +64,14 @@ public class Dealership {
 
         for (Vehicle cars : inventory) {
 
-            if (make.equalsIgnoreCase(cars.getMake()) && model.equalsIgnoreCase(cars.getModel())) {
+            if ((make.equalsIgnoreCase(cars.getMake()) && model.isEmpty())) {
                 byMakeModel.add(cars);
+            } else if (make.equalsIgnoreCase(cars.getMake()) && model.equalsIgnoreCase(cars.getModel())) {
+                byMakeModel.add(cars);
+
             }
         }
+        setSortingOrder(lowToHigh, byMakeModel, Comparator.comparing(Vehicle::getModel).thenComparing(Vehicle::getPrice));
         return byMakeModel;
     }
 
@@ -134,11 +138,8 @@ public class Dealership {
         inventory.remove(vehicle);
     }
 
-    public void setSortingOrder(boolean lowToHigh, List<Vehicle> processMenu) {
-        if (lowToHigh) {
-            processMenu.sort(Comparator.comparing(Vehicle::getPrice));
-        } else {
-            processMenu.sort(Comparator.comparing(Vehicle::getPrice).reversed());
-        }
+    public void setSortingOrder(boolean lowToHigh, List<Vehicle> processMenu, Comparator<Vehicle> filter) {
+        processMenu.sort(lowToHigh ? filter : filter.reversed());
+
     }
 }

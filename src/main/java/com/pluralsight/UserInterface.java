@@ -103,8 +103,10 @@ public class UserInterface {
     private void processGetByMakeModelRequest() {
         boolean running = true;
         while (running) {
+            //todo add extra text giving the user the option to enter only make.
             String make = Console.promptForString("Enter make of the vehicle: ");
             String model = Console.promptForString("Enter model of the vehicle: ");
+
             System.out.println("""
                     Select alphabetical sorting order:
                     
