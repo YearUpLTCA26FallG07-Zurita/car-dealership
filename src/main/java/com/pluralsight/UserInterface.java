@@ -13,6 +13,7 @@ public class UserInterface {
     public UserInterface() {
 
     }
+
     private void displayVehicles(List<Vehicle> allVehicles) {
         for (Vehicle vehicle : allVehicles) {
             System.out.println(vehicle);
@@ -30,7 +31,7 @@ public class UserInterface {
             init();
             System.out.println("""
                     Select an option:
-
+                    
                     1) Find vehicles by price range
                     2) Find vehicles by make and model
                     3) Find vehicles by year range
@@ -41,7 +42,7 @@ public class UserInterface {
                     7) List ALL vehicles
                     8) Add a vehicle
                     9) Remove a vehicle
-
+                    
                     99) Quit program""");
 
             int input = Console.promptForInt("Enter command: ");
@@ -55,7 +56,9 @@ public class UserInterface {
                 case 7 -> processGetAllVehiclesRequest();
                 case 8 -> processAddVehicleRequest();
                 case 9 -> processRemoveVehicleRequest();
-                case 99 -> {return;}
+                case 99 -> {
+                    return;
+                }
                 default -> System.out.println("Enter a valid input.");
             }
         }
@@ -67,26 +70,26 @@ public class UserInterface {
             BigDecimal minPrice = BigDecimal.valueOf(Console.promptForDouble("Enter lowest price: "));
             BigDecimal maxPrice = BigDecimal.valueOf(Console.promptForDouble("Enter highest price: "));
             System.out.println("""
-                Select sorting order:
-                
-                1) Low to High
-                2) High to Low
-                """);
+                    Select sorting order:
+                    
+                    1) Low to High
+                    2) High to Low
+                    """);
 
             boolean lowToHigh = processSetSortingOrder();
             String sortOrder = lowToHigh ? "Lowest to highest" : "Highest to lowest";
 
             System.out.printf("""
-                You entered:
-                
-                Range: $%,.2f - $%,.2f
-                Sort : %s
-                
-                Is this correct?
-                
-                1) Yes.
-                2) No, revise input.
-                """, minPrice, maxPrice, sortOrder);
+                    You entered:
+                    
+                    Range: $%,.2f - $%,.2f
+                    Sort : %s
+                    
+                    Is this correct?
+                    
+                    1) Yes.
+                    2) No, revise input.
+                    """, minPrice, maxPrice, sortOrder);
 
             int confirm = Console.promptForInt("Enter selection: ");
             switch (confirm) {
@@ -142,12 +145,83 @@ public class UserInterface {
     }
 
     private void processGetByYearRequest() {
-        int minYear = Console.promptForInt("Enter minimum year: ");
-        int maxYear = Console.promptForInt("Enter maximum year: ");
+        boolean running = true;
+        System.out.println("""
+                    What type of range would you like to view?
+                    
+                    1) Single year range
+                    2) Multiple year range
+                    """);
 
-        //todo add confirmation prompt
+        int range = Console.promptForInt("Enter selection: ");
 
-        displayVehicles(dealership.getVehiclesByYear(minYear, maxYear));
+        while (running) {
+            //todo add extra text giving the user the option to enter only one year.
+            switch (range) {
+                case 1 -> {
+                    int year = Console.promptForInt("Enter year: ");
+
+                    System.out.printf("""
+                            You entered:
+                            
+                            Year: %d
+                            
+                            Is this correct?
+                            
+                            1) Yes.
+                            2) No, revise input.
+                            """, year);
+
+                    int confirm = Console.promptForInt("Enter selection: ");
+
+                    switch (confirm) {
+                        case 1 -> {
+                            displayVehicles(dealership.getVehiclesBySingleYear(year));
+                            running = false;
+                        }
+                        case 2 -> running = true;
+                        default -> System.out.println("Enter a valid input.");
+                    }
+                }
+                case 2 -> {
+                    int minYear = Console.promptForInt("Enter minimum year: ");
+                    int maxYear = Console.promptForInt("Enter maximum year: ");
+
+                    System.out.println("""
+                            Select sorting order:
+                            
+                            1) Oldest to newest
+                            2) Newest to oldest
+                            """);
+
+                    boolean lowToHigh = processSetSortingOrder();
+                    String sortOrder = lowToHigh ? "Oldest to newest" : "Newest to oldest";
+
+                    System.out.printf("""
+                            You entered:
+                            
+                            Vehicle: %d %d
+                            Sort   : %s
+                            
+                            Is this correct?
+                            
+                            1) Yes.
+                            2) No, revise input.
+                            """, minYear, maxYear, sortOrder);
+
+                    int confirm = Console.promptForInt("Enter selection: ");
+
+                    switch (confirm) {
+                        case 1 -> {
+                            displayVehicles(dealership.getVehiclesByMultiYear(minYear, maxYear, lowToHigh));
+                            running = false;
+                        }
+                        case 2 -> running = true;
+                        default -> System.out.println("Enter a valid input.");
+                    }
+                }
+            }
+        }
     }
 
     private void processGetByColorRequest() {
@@ -216,13 +290,8 @@ public class UserInterface {
             System.out.println("Vehicle is not in inventory.");
         }
     }
+
     private boolean processSetSortingOrder() {
-//        System.out.println("""
-//                Select sorting order:
-//
-//                1) Low to High
-//                2) High to Low
-//                """);
 
         int option = Console.promptForInt("Enter selection: ");
         boolean lowToHigh = true;
@@ -230,9 +299,10 @@ public class UserInterface {
         switch (option) {
             case 1 -> lowToHigh = true;
             case 2 -> lowToHigh = false;
-            case 99 -> {}
+            case 99 -> {
+            }
             default -> System.out.println("Invalid option. Enter a valid input.");
         }
-    return lowToHigh;
+        return lowToHigh;
     }
 }

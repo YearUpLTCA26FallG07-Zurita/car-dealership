@@ -75,16 +75,25 @@ public class Dealership {
         return byMakeModel;
     }
 
-    public List<Vehicle> getVehiclesByYear(int min, int max) {
+    public List<Vehicle> getVehiclesBySingleYear(int year) {
         List<Vehicle> withinYear = new ArrayList<>();
 
-        for (Vehicle cars : inventory) {
-            int year = cars.getYear();
-
-            if (year >= min && year <= max) {
-                withinYear.add(cars);
+            for (Vehicle cars : inventory) {
+                if (year == cars.getYear()) {
+                    withinYear.add(cars);
             }
         }
+        return withinYear;
+    }
+    public List<Vehicle> getVehiclesByMultiYear(int year1, int year2, boolean lowToHigh) {
+        List<Vehicle> withinYear = new ArrayList<>();
+
+            for (Vehicle cars : inventory) {
+                if (cars.getYear() >= year1 && cars.getYear() <= year2) {
+                    withinYear.add(cars);
+                }
+            }
+        setSortingOrder(lowToHigh, withinYear, Comparator.comparing(Vehicle::getYear));
         return withinYear;
     }
 
