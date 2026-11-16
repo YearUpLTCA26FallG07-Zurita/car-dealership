@@ -78,11 +78,10 @@ public class UserInterface {
                     inputLow = Console.promptForString("Enter lowest price range, or leave blank for inventory minimum: ").trim();
                     minPrice = inputLow.isEmpty() ? new BigDecimal(0) : new BigDecimal(inputLow);
 
-                    if (minPrice)
+                    BigDecimal minAllowed = new BigDecimal("5000");
 
-
-                    if (minPrice.compareTo(BigDecimal.ZERO) == 0) {
-                        throw new IllegalArgumentException("Lowest price must be greater than $0.00.");
+                    if (minPrice.compareTo(minAllowed) < 0) {
+                        throw new IllegalArgumentException("Lowest price must be greater than $5,000.00.");
                     }
                     break;
                 } catch (IllegalArgumentException e) {
@@ -95,6 +94,11 @@ public class UserInterface {
                     inputHigh = Console.promptForString("Enter highest price range, or leave blank for inventory maximum: ").trim();
                     maxPrice = inputHigh.isEmpty() ? new BigDecimal(0) : new BigDecimal(inputLow);
 
+                    BigDecimal maxAllowed = new BigDecimal("40001");
+
+                    if (maxPrice.compareTo(maxAllowed) >= 0) {
+                        throw new IllegalArgumentException("Highest price must be less than $40,000.00.");
+                    }
                     if (maxPrice.compareTo(minPrice) < 0) {
                         throw new IllegalArgumentException("Maximum price cannot be less than minimum price.");
                     }
@@ -396,11 +400,11 @@ public class UserInterface {
                     throw new IllegalArgumentException("Maximum vehicle type entry is 3.");
                 }
                 System.out.println("""
-                    Select sorting order:
-                    
-                    1) Lowest to highest
-                    2) Highest to lowest
-                    """);
+                        Select sorting order:
+                        
+                        1) Lowest to highest
+                        2) Highest to lowest
+                        """);
 
                 lowToHigh = processSetSortingOrder();
                 String sortOrder = lowToHigh ? "Lowest to highest" : "Highest to lowest";
@@ -414,16 +418,16 @@ public class UserInterface {
                     System.out.printf("Vehicle Types: %s, %s, %s\nSort         : %s\n", inputTypes[0], inputTypes[1], inputTypes[2], sortOrder);
                 }
 
-                    System.out.println("""
-                            \nIs this correct?
-                            
-                            1) Yes
-                            2) No, revise input.""");
+                System.out.println("""
+                        \nIs this correct?
+                        
+                        1) Yes
+                        2) No, revise input.""");
 
                 int confirm = Console.promptForInt("Enter selection: ");
                 switch (confirm) {
                     case 1 -> {
-                        displayVehicles(dealership.getVehiclesByType(lowToHigh,inputTypes));
+                        displayVehicles(dealership.getVehiclesByType(lowToHigh, inputTypes));
                         running = false;
                     }
                     case 2 -> running = true;
@@ -442,21 +446,119 @@ public class UserInterface {
     }
 
     private void processAddVehicleRequest() throws IOException {
-        int vin = Console.promptForInt("Enter VIN number: ");
-        int year = Console.promptForInt("Enter year of vehicle: ");
-        String make = Console.promptForString("Enter vehicle make: ");
-        String model = Console.promptForString("Enter vehicle model: ");
-        String vehicleType = Console.promptForString("Enter vehicle type: ");
-        String color = Console.promptForString("Enter vehicle color: ");
-        int odometer = Console.promptForInt("Enter odometer reading: ");
-        BigDecimal price = BigDecimal.valueOf(Console.promptForDouble("Enter vehicle price: "));
+        int vin;
+        int year;
+        String make;
+        String model;
+        String vehicleType;
+        String color;
+        int odometer;
+        BigDecimal price;
+        while (true) {
+            try {
+                vin = Console.promptForInt("Enter VIN number: ");
+                for (Vehicle cars : dealership.inventory) {
+                    if (vin == cars.getVin()) {
+                        throw new IllegalArgumentException("VIN already exists in database. Enter a new 6-digit VIN number.");
+                    }
+                }
+                if (vin < 100000 || vin > 999999) {
+                    throw new IllegalArgumentException("VIN number must be 6 digits long.");
+                }
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
 
-        Vehicle newCar = new Vehicle(vin, year, make, model, vehicleType, color, odometer, price);
-        dealership.addVehicle(newCar);
-        DealershipFileManager.saveDealership(dealership);
-        System.out.println("Thank you.");
+        // Exception handler checking if new vehicle is a duplicate of a vehicle in the list.
+        while (true) {
+            try {
+                while (true) {
+                    year = Console.promptForInt("Enter year of vehicle: ");
+                    try {
+                        if (year < 1990 || year > 2026) {
+                            throw new IllegalArgumentException("Invalid year entry. Enter a year between 1990 - 2026.");
+                        }
+                        break;
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
 
-    }
+                    make = Console.promptForString("Enter vehicle make: ").trim();
+                    model = Console.promptForString("Enter vehicle model: ").trim();
+
+                    while (true) {
+                        vehicleType = Console.promptForString("Enter vehicle type: ").trim();
+                        try {
+                            if (vehicleType.equalsIgnoreCase("car")) {
+                                vehicleType = "Car";
+                            } else if (vehicleType.equalsIgnoreCase("van")) {
+                                vehicleType = "Van";
+                            } else if (vehicleType.equalsIgnoreCase("truck")) {
+                                vehicleType = "Truck";
+                            } else if (vehicleType.equalsIgnoreCase("suv")) {
+                                vehicleType = "SUV";
+                            } else {
+                                throw new IllegalArgumentException("Invalid vehicle type entry. Enter only Car, Van, Truck, or SUV.");
+                            }
+                            break;
+                        } catch (IllegalArgumentException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+
+                    color = Console.promptForString("Enter vehicle color: ").trim();
+
+                    while (true) {
+                        odometer = Console.promptForInt("Enter odometer reading: ");
+                        try {
+                            if (odometer < 1000) {
+                                throw new IllegalArgumentException("Invalid mileage entry. Enter only a mileage above 1,000 miles.");
+                            }
+                            if (odometer > 200000) {
+                                throw new IllegalArgumentException("Invalid mileage entry. Enter only a mileage below 200,000 miles.");
+                            }
+                            break;
+                        } catch (IllegalArgumentException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                    while (true) {
+                        price = BigDecimal.valueOf(Console.promptForDouble("Enter vehicle price: "));
+                        try {
+                            BigDecimal minAllowed = new BigDecimal("5000");
+
+                            if (price.compareTo(minAllowed) < 0) {
+                                throw new IllegalArgumentException("Invalid price entry. Enter only a price above $5,000.");
+                            }
+                            break;
+                        } catch (IllegalArgumentException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                    for (Vehicle cars : dealership.inventory) {
+                        if (year == cars.getYear()
+                                && make.equalsIgnoreCase(cars.getMake())
+                                && model.equalsIgnoreCase(cars.getModel())
+                                && vehicleType.equalsIgnoreCase(cars.getVehicleType())
+                                && color.equalsIgnoreCase(cars.getColor())
+                                && odometer == cars.getOdometer()
+                                && price.compareTo(cars.getPrice()) == 0) {
+                            throw new IllegalArgumentException("Entered vehicle already exists in inventory. Please enter new values.");
+                        }
+                    }
+                Vehicle newCar = new Vehicle(vin, year, make, model, vehicleType, color, odometer, price);
+                dealership.addVehicle(newCar);
+                DealershipFileManager.saveDealership(dealership);
+                System.out.println("Thank you.");
+                break;
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
 
     private void processRemoveVehicleRequest() throws IOException {
         int vehicleId = Console.promptForInt("Enter vehicle VIN number: ");

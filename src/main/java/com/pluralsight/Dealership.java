@@ -12,7 +12,7 @@ public class Dealership {
     private String name;
     private String address;
     private String phone;
-    private final ArrayList<Vehicle> inventory;
+    final ArrayList<Vehicle> inventory;
 
     public String getName() {
         return "Homestead Motors";
